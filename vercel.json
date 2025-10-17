@@ -1,0 +1,16 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "env": {
+    "NEXTAUTH_SECRET": "@nextauth_secret",
+    "NEXTAUTH_URL": "@nextauth_url", 
+    "DATABASE_URL": "@database_url",
+    "INSTACART_API_KEY": "@instacart_api_key"
+  }
+}
