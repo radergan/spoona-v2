@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { MainNavigation } from '@/components/MainNavigation'
 
 export default function DashboardPage() {
