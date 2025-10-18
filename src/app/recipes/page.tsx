@@ -44,9 +44,15 @@ export default function RecipesPage() {
             <h1 className="text-2xl font-semibold text-gh-fg-default mb-gh-2">My Recipes</h1>
             <p className="text-gh-fg-muted">Organize and discover your favorite recipes</p>
           </div>
-          <button className="bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis px-gh-4 py-1.5 rounded-gh-sm text-sm font-medium transition-colors">
-            + Add Recipe
-          </button>
+          <a 
+            href="/recipes/create"
+            className="bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis px-gh-4 py-1.5 rounded-gh-sm text-sm font-medium transition-colors inline-flex items-center gap-gh-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Create Recipe
+          </a>
         </div>
 
         {/* Search and Filter */}
