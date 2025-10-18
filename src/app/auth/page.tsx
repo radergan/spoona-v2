@@ -2,20 +2,80 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
     name: ''
   })
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement authentication logic
-    console.log('Form submitted:', formData)
+    setIsLoading(true)
+    setError('')
+
+    try {
+      if (isLogin) {
+        // Login
+        const result = await signIn('credentials', {
+          email: formData.email,
+          password: formData.password,
+          redirect: false,
+        })
+
+        if (result?.error) {
+          setError('Invalid email or password')
+        } else {
+          router.push('/dashboard')
+        }
+      } else {
+        // Register
+        if (formData.password !== formData.confirmPassword) {
+          setError('Passwords do not match')
+          return
+        }
+
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            name: formData.name,
+          }),
+        })
+
+        if (response.ok) {
+          // Auto-login after successful registration
+          const result = await signIn('credentials', {
+            email: formData.email,
+            password: formData.password,
+            redirect: false,
+          })
+
+          if (!result?.error) {
+            router.push('/dashboard')
+          }
+        } else {
+          const data = await response.json()
+          setError(data.error || 'Registration failed')
+        }
+      }
+    } catch (error) {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +100,13 @@ export default function AuthPage() {
             {isLogin ? 'Sign in to your account' : 'Join Spoona today'}
           </p>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-md text-sm">
+            {error}
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -113,9 +180,10 @@ export default function AuthPage() {
 
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            disabled={isLoading}
+            className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white py-2 px-4 rounded-md font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
           >
-            {isLogin ? 'Sign In' : 'Create Account'}
+            {isLoading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
           </button>
         </form>
 

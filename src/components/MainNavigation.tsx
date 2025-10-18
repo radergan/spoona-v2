@@ -2,9 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { signOut, useSession } from 'next-auth/react'
 
 export function MainNavigation() {
   const pathname = usePathname()
+  const { data: session } = useSession()
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: '/' })
+  }
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
@@ -45,10 +51,16 @@ export function MainNavigation() {
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
+            <span className="text-gray-600 text-sm">
+              {session?.user?.name || session?.user?.email}
+            </span>
             <button className="text-gray-600 hover:text-orange-600 transition-colors">
               <span>👤</span>
             </button>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            <button 
+              onClick={handleSignOut}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
               Sign Out
             </button>
           </div>
