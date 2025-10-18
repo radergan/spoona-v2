@@ -141,7 +141,7 @@ export function RecipeSelectionModal({ isOpen, onClose, onSelectRecipe }: Recipe
                       <p className="text-sm text-gray-600 mb-2">{recipe.description}</p>
                     )}
                   </div>
-                  <div className="text-4xl ml-4">🍽️</div>
+
                 </div>
 
                 <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
@@ -179,7 +179,6 @@ export function RecipeSelectionModal({ isOpen, onClose, onSelectRecipe }: Recipe
 
           {filteredRecipes.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No recipes found</h3>
               <p className="text-gray-600">
                 {searchQuery 

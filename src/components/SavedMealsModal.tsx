@@ -143,7 +143,7 @@ export function SavedMealsModal({ isOpen, onClose, onSelectMeal }: SavedMealsMod
                       Created: {new Date(meal.createdAt).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="text-4xl ml-4">🥗</div>
+
                 </div>
 
                 {/* Items Preview */}
@@ -175,7 +175,6 @@ export function SavedMealsModal({ isOpen, onClose, onSelectMeal }: SavedMealsMod
 
           {filteredMeals.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">🥗</div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No saved meals found</h3>
               <p className="text-gray-600">
                 {searchQuery 

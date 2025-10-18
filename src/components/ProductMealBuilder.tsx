@@ -158,9 +158,9 @@ export function ProductMealBuilder({ onSave, onCancel }: ProductMealBuilderProps
           <h2 className="text-2xl font-bold">Build Product-Based Meal</h2>
           <button
             onClick={onCancel}
-            className="text-gray-500 hover:text-gray-700 text-2xl"
+            className="text-gray-500 hover:text-gray-700 text-xl"
           >
-            ×
+            Close
           </button>
         </div>
 
@@ -245,9 +245,9 @@ export function ProductMealBuilder({ onSave, onCancel }: ProductMealBuilderProps
                         </select>
                         <button
                           onClick={() => removeProduct(item.product.id)}
-                          className="text-red-500 hover:text-red-700 ml-2"
+                          className="text-red-500 hover:text-red-700 ml-2 text-sm px-2 py-1 border border-red-300 rounded"
                         >
-                          ×
+                          Remove
                         </button>
                       </div>
                     </div>

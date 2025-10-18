@@ -13,10 +13,10 @@ export function MainNavigation() {
   }
 
   const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: '🏠' },
-    { href: '/recipes', label: 'Recipes', icon: '🍳' },
-    { href: '/meal-planning', label: 'Meal Planning', icon: '📅' },
-    { href: '/shopping', label: 'Shopping', icon: '🛒' },
+    { href: '/dashboard', label: 'Dashboard' },
+    { href: '/recipes', label: 'Recipes' },
+    { href: '/meal-planning', label: 'Meal Planning' },
+    { href: '/shopping', label: 'Shopping' },
   ]
 
   return (
@@ -42,8 +42,7 @@ export function MainNavigation() {
                       : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50'
                   }`}
                 >
-                  <span>{item.icon}</span>
-                  <span>{item.label}</span>
+                  {item.label}
                 </Link>
               )
             })}

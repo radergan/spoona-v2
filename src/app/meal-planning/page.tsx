@@ -12,7 +12,6 @@ type ModalType = null | 'recipe' | 'savedMeal' | 'mealBuilder' | 'productMeal'
 interface MealPlanItem {
   type: 'recipe' | 'savedMeal' | 'productMeal'
   name: string
-  emoji: string
   estimatedPrice?: number
 }
 
@@ -24,12 +23,12 @@ export default function MealPlanningPage() {
 
   // Sample meal plan data
   const [mealPlan, setMealPlan] = useState<Record<string, MealPlanItem>>({
-    'Monday-Breakfast': { type: 'recipe', name: 'Oatmeal with Berries', emoji: '🥣' },
-    'Monday-Dinner': { type: 'recipe', name: 'Chicken Parmesan', emoji: '🍗' },
-    'Tuesday-Lunch': { type: 'savedMeal', name: 'Caesar Salad', emoji: '🥗' },
-    'Wednesday-Dinner': { type: 'recipe', name: 'Beef Stir Fry', emoji: '🥘' },
-    'Friday-Breakfast': { type: 'recipe', name: 'Pancakes', emoji: '🥞' },
-    'Sunday-Dinner': { type: 'recipe', name: 'Roast Chicken', emoji: '🍖' }
+    'Monday-Breakfast': { type: 'recipe', name: 'Oatmeal with Berries' },
+    'Monday-Dinner': { type: 'recipe', name: 'Chicken Parmesan' },
+    'Tuesday-Lunch': { type: 'savedMeal', name: 'Caesar Salad' },
+    'Wednesday-Dinner': { type: 'recipe', name: 'Beef Stir Fry' },
+    'Friday-Breakfast': { type: 'recipe', name: 'Pancakes' },
+    'Sunday-Dinner': { type: 'recipe', name: 'Roast Chicken' }
   })
 
   const handleCellClick = (day: string, mealType: string) => {
@@ -46,7 +45,7 @@ export default function MealPlanningPage() {
       const key = `${selectedCell.day}-${selectedCell.mealType}`
       setMealPlan(prev => ({
         ...prev,
-        [key]: { type: 'recipe', name: recipe.title, emoji: '🍽️' }
+        [key]: { type: 'recipe', name: recipe.title }
       }))
     }
     setActiveModal(null)
@@ -58,7 +57,7 @@ export default function MealPlanningPage() {
       const key = `${selectedCell.day}-${selectedCell.mealType}`
       setMealPlan(prev => ({
         ...prev,
-        [key]: { type: 'savedMeal', name: meal.name, emoji: '🥗' }
+        [key]: { type: 'savedMeal', name: meal.name }
       }))
     }
     setActiveModal(null)
@@ -70,7 +69,7 @@ export default function MealPlanningPage() {
       const key = `${selectedCell.day}-${selectedCell.mealType}`
       setMealPlan(prev => ({
         ...prev,
-        [key]: { type: 'savedMeal', name: meal.name, emoji: '🍽️' }
+        [key]: { type: 'savedMeal', name: meal.name }
       }))
     }
     setActiveModal(null)
@@ -85,7 +84,6 @@ export default function MealPlanningPage() {
         [key]: { 
           type: 'productMeal', 
           name: meal.name, 
-          emoji: '🛒',
           estimatedPrice: meal.estimatedTotal
         }
       }))
@@ -150,57 +148,62 @@ export default function MealPlanningPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gh-canvas-default">
       <MainNavigation />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+      <main className="container mx-auto px-gh-6 py-gh-6">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-gh-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Meal Planning</h1>
-            <p className="text-gray-600">Plan your weekly meals and generate shopping lists</p>
+            <h1 className="text-2xl font-semibold text-gh-fg-default mb-gh-2">Meal Planning</h1>
+            <p className="text-gh-fg-muted text-sm">Plan your weekly meals and generate shopping lists</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-gh-2">
             <button 
               onClick={generateShoppingList}
-              className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
+              className="bg-gh-canvas-default border border-gh-border-default hover:bg-gh-canvas-subtle text-gh-fg-default px-gh-3 py-1.5 rounded-gh-md text-sm font-medium transition-colors shadow-gh-sm hover:shadow-gh-md"
             >
-              📋 Generate Shopping List
+              Generate Shopping List
             </button>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-              🔄 New Week
+            <button className="bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis px-gh-4 py-1.5 rounded-gh-md text-sm font-medium transition-colors shadow-gh-sm">
+              New Week
             </button>
           </div>
         </div>
 
         {/* Week Navigation */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md p-gh-4 mb-gh-6 shadow-gh-sm">
           <div className="flex items-center justify-between">
-            <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
-              <span>←</span>
+            <button className="p-gh-2 hover:bg-gh-neutral-muted rounded-gh-sm transition-colors text-gh-fg-muted hover:text-gh-fg-default">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
             </button>
-            <h2 className="text-lg font-semibold">Week of October 14 - October 20, 2025</h2>
-            <button className="p-2 hover:bg-gray-100 rounded-md transition-colors">
-              <span>→</span>
+            <h2 className="text-base font-medium text-gh-fg-default">Week of October 14 - October 20, 2025</h2>
+            <button className="p-gh-2 hover:bg-gh-neutral-muted rounded-gh-sm transition-colors text-gh-fg-muted hover:text-gh-fg-default">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         </div>
 
         {/* Meal Planning Grid */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md overflow-hidden shadow-gh-sm">
           {/* Header Row */}
-          <div className="grid grid-cols-8 bg-gray-50 border-b border-gray-200">
-            <div className="p-4 font-medium text-gray-700">Meal</div>
+          <div className="grid grid-cols-8 bg-gh-canvas-inset border-b border-gh-border-muted">
+            <div className="p-gh-3 text-sm font-medium text-gh-fg-muted">Meal</div>
             {daysOfWeek.map((day) => (
-              <div key={day} className="p-4 font-medium text-gray-700 text-center border-l border-gray-200">
-                {day}
+              <div key={day} className="p-gh-3 text-sm font-medium text-gh-fg-muted text-center border-l border-gh-border-muted">
+                {day.slice(0, 3)}
               </div>
             ))}
           </div>
 
           {/* Meal Rows */}
           {mealTypes.map((mealType) => (
-            <div key={mealType} className="grid grid-cols-8 border-b border-gray-200 last:border-b-0">
-              <div className="p-4 bg-gray-50 font-medium text-gray-700 flex items-center border-r border-gray-200">
+            <div key={mealType} className="grid grid-cols-8 border-b border-gh-border-muted last:border-b-0">
+              <div className="p-gh-3 bg-gh-canvas-inset text-sm font-medium text-gh-fg-default flex items-center border-r border-gh-border-muted">
                 {mealType}
               </div>
               {daysOfWeek.map((day) => {
@@ -208,20 +211,31 @@ export default function MealPlanningPage() {
                 const meal = mealPlan[mealKey]
                 
                 return (
-                  <div key={`${day}-${mealType}`} className="p-4 border-l border-gray-200 min-h-[100px] hover:bg-gray-50 transition-colors">
+                  <div key={`${day}-${mealType}`} className="p-gh-2 border-l border-gh-border-muted min-h-[80px] hover:bg-gh-canvas-subtle transition-colors">
                     {meal ? (
-                      <div className="bg-orange-100 border border-orange-200 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition-colors group relative">
-                        <div className="text-lg mb-1">{meal.emoji}</div>
-                        <div className="text-sm font-medium text-gray-800">{meal.name}</div>
-                        <div className="text-xs text-orange-600 mt-1">
-                          {meal.type === 'recipe' ? '📖 Recipe' : '🥗 Custom'}
+                      <div className="bg-gh-success-subtle border border-gh-success-muted rounded-gh-sm p-gh-2 cursor-pointer hover:bg-gh-success-muted/30 transition-colors group relative">
+                        <div className="text-xs font-medium text-gh-fg-default mb-1 line-clamp-2">{meal.name}</div>
+                        <div className="flex items-center gap-1">
+                          <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${
+                            meal.type === 'recipe' ? 'bg-gh-accent-subtle text-gh-accent-fg' : 
+                            meal.type === 'productMeal' ? 'bg-gh-severe-subtle text-gh-severe-fg' : 
+                            'bg-gh-neutral-muted text-gh-fg-muted'
+                          }`}>
+                            {meal.type === 'recipe' ? 'Recipe' : 
+                             meal.type === 'productMeal' ? 'Product' : 'Custom'}
+                          </span>
                         </div>
+                        {meal.estimatedPrice && (
+                          <div className="text-xs text-gh-success-fg mt-1 font-medium">
+                            ${meal.estimatedPrice.toFixed(2)}
+                          </div>
+                        )}
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             handleRemoveMeal(day, mealType)
                           }}
-                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs transition-all"
+                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-gh-danger-emphasis hover:bg-gh-danger-fg text-gh-fg-onEmphasis rounded-full w-4 h-4 flex items-center justify-center text-xs transition-all"
                         >
                           ×
                         </button>
@@ -229,9 +243,9 @@ export default function MealPlanningPage() {
                     ) : (
                       <div 
                         onClick={() => handleCellClick(day, mealType)}
-                        className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition-colors h-full flex items-center justify-center"
+                        className="border-2 border-dashed border-gh-border-default rounded-gh-sm p-gh-2 text-center cursor-pointer hover:border-gh-accent-muted hover:bg-gh-accent-subtle transition-colors h-full flex items-center justify-center"
                       >
-                        <span className="text-gray-400 text-sm">+ Add meal</span>
+                        <span className="text-gh-fg-muted text-xs">+ Add meal</span>
                       </div>
                     )}
                   </div>
@@ -241,137 +255,123 @@ export default function MealPlanningPage() {
           ))}
         </div>
 
-        {/* Quick Add Section */}
-        <div className="mt-6 grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold mb-4">Quick Add Recipe</h3>
-            <div className="space-y-3">
+        {/* Quick Add and Summary Section */}
+        <div className="mt-gh-6 grid lg:grid-cols-2 gap-gh-6">
+          {/* Quick Add Section */}
+          <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md p-gh-4 shadow-gh-sm">
+            <h3 className="text-base font-semibold text-gh-fg-default mb-gh-4">Quick Add Recipe</h3>
+            <div className="space-y-gh-3">
               <input
                 type="text"
                 placeholder="Search recipes..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-gh-3 py-2 text-sm border border-gh-border-default rounded-gh-sm focus:outline-none focus:ring-0 focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors"
               />
-              <div className="flex gap-2">
-                <select className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+              <div className="grid grid-cols-2 gap-gh-2">
+                <select className="px-gh-3 py-2 text-sm border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors">
                   <option>Select Day</option>
                   {daysOfWeek.map(day => <option key={day}>{day}</option>)}
                 </select>
-                <select className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent">
+                <select className="px-gh-3 py-2 text-sm border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors">
                   <option>Select Meal</option>
                   {mealTypes.map(meal => <option key={meal}>{meal}</option>)}
                 </select>
               </div>
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium transition-colors">
+              <button className="w-full bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis py-2 px-gh-3 rounded-gh-sm text-sm font-medium transition-colors">
                 Add to Plan
               </button>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold mb-4">This Week&apos;s Summary</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Planned Meals:</span>
-                <span className="font-medium">6 of 21</span>
+          {/* Summary Section */}
+          <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md p-gh-4 shadow-gh-sm">
+            <h3 className="text-base font-semibold text-gh-fg-default mb-gh-4">This Week&apos;s Summary</h3>
+            <div className="space-y-gh-3">
+              <div className="flex justify-between items-center py-1">
+                <span className="text-sm text-gh-fg-muted">Planned Meals:</span>
+                <span className="text-sm font-medium text-gh-fg-default">6 of 21</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Estimated Cost:</span>
-                <span className="font-medium">$124.50</span>
+              <div className="flex justify-between items-center py-1">
+                <span className="text-sm text-gh-fg-muted">Estimated Cost:</span>
+                <span className="text-sm font-medium text-gh-success-fg">$124.50</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Shopping Items:</span>
-                <span className="font-medium">23 items</span>
+              <div className="flex justify-between items-center py-1">
+                <span className="text-sm text-gh-fg-muted">Shopping Items:</span>
+                <span className="text-sm font-medium text-gh-fg-default">23 items</span>
               </div>
-              <button className="w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md font-medium transition-colors mt-4">
-                🛒 Create Shopping List
-              </button>
+              <div className="border-t border-gh-border-muted pt-gh-3 mt-gh-4">
+                <button className="w-full bg-gh-success-emphasis hover:bg-gh-success-fg text-gh-fg-onEmphasis py-2 px-gh-3 rounded-gh-sm text-sm font-medium transition-colors">
+                  Create Shopping List
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Meal Selection Popup */}
+        {/* Meal Selection Modal */}
         {selectedCell && !activeModal && (
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4"
+            className="fixed inset-0 bg-gh-neutral-emphasis/50 flex items-center justify-center z-40 p-gh-4"
             onClick={() => setSelectedCell(null)}
           >
             <div 
-              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
+              className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md shadow-gh-lg max-w-md w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">
+              <div className="flex justify-between items-center p-gh-4 border-b border-gh-border-muted">
+                <h3 className="text-base font-semibold text-gh-fg-default">
                   Add meal for {selectedCell.day} {selectedCell.mealType}
                 </h3>
                 <button
                   onClick={() => setSelectedCell(null)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-gh-fg-muted hover:text-gh-fg-default p-1 rounded-gh-sm hover:bg-gh-neutral-muted transition-colors"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
-              <div className="space-y-3">
+              <div className="p-gh-4 space-y-gh-2">
                 <button
                   onClick={() => handleAddMeal('recipe')}
-                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+                  className="w-full p-gh-3 text-left border border-gh-border-default rounded-gh-sm hover:border-gh-accent-muted hover:bg-gh-accent-subtle transition-colors group"
                 >
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">📖</span>
-                    <div>
-                      <div className="font-medium">From Recipe</div>
-                      <div className="text-sm text-gray-600">Choose from your recipe collection</div>
-                    </div>
-                  </div>
+                  <div className="font-medium text-sm text-gh-fg-default group-hover:text-gh-accent-fg">From Recipe</div>
+                  <div className="text-xs text-gh-fg-muted mt-1">Choose from your recipe collection</div>
                 </button>
                 
                 <button
                   onClick={() => handleAddMeal('savedMeal')}
-                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors"
+                  className="w-full p-gh-3 text-left border border-gh-border-default rounded-gh-sm hover:border-gh-success-muted hover:bg-gh-success-subtle transition-colors group"
                 >
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">🥗</span>
-                    <div>
-                      <div className="font-medium">Saved Meal</div>
-                      <div className="text-sm text-gray-600">Choose from your custom meals</div>
-                    </div>
-                  </div>
+                  <div className="font-medium text-sm text-gh-fg-default group-hover:text-gh-success-fg">Saved Meal</div>
+                  <div className="text-xs text-gh-fg-muted mt-1">Choose from your custom meals</div>
                 </button>
-                
+
                 <button
                   onClick={() => handleAddMeal('productMeal')}
-                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors"
+                  className="w-full p-gh-3 text-left border border-gh-border-default rounded-gh-sm hover:border-gh-severe-muted hover:bg-gh-severe-subtle transition-colors group"
                 >
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">🛒</span>
-                    <div>
-                      <div className="font-medium">Product-Based Meal</div>
-                      <div className="text-sm text-gray-600">Mac & cheese, nuggets, etc.</div>
-                    </div>
-                  </div>
+                  <div className="font-medium text-sm text-gh-fg-default group-hover:text-gh-severe-fg">Product-Based Meal</div>
+                  <div className="text-xs text-gh-fg-muted mt-1">Mac & cheese, nuggets, etc.</div>
                 </button>
 
                 <button
                   onClick={() => handleAddMeal('mealBuilder')}
-                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                  className="w-full p-gh-3 text-left border border-gh-border-default rounded-gh-sm hover:border-gh-attention-muted hover:bg-gh-attention-subtle transition-colors group"
                 >
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">🔍</span>
-                    <div>
-                      <div className="font-medium">Search Products</div>
-                      <div className="text-sm text-gray-600">Search Instacart catalog</div>
-                    </div>
-                  </div>
+                  <div className="font-medium text-sm text-gh-fg-default group-hover:text-gh-attention-fg">Search Products</div>
+                  <div className="text-xs text-gh-fg-muted mt-1">Search Instacart catalog</div>
                 </button>
               </div>
               
-              <button
-                onClick={() => setSelectedCell(null)}
-                className="mt-4 w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
+              <div className="p-gh-4 border-t border-gh-border-muted">
+                <button
+                  onClick={() => setSelectedCell(null)}
+                  className="w-full px-gh-3 py-2 border border-gh-border-default text-gh-fg-default rounded-gh-sm hover:bg-gh-canvas-subtle transition-colors text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -407,7 +407,7 @@ export default function MealPlanningPage() {
 
         {activeModal === 'mealBuilder' && (
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-gh-neutral-emphasis/50 flex items-center justify-center z-50 p-gh-4"
             onClick={() => {
               setActiveModal(null)
               setSelectedCell(null)

@@ -32,10 +32,10 @@ export default function ShoppingPage() {
           </div>
           <div className="flex gap-3">
             <button className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
-              📋 New List
+              New List
             </button>
             <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-              🛒 Order with Instacart
+              Order with Instacart
             </button>
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function ShoppingPage() {
 
             {/* Instacart Integration */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold mb-4">🛒 Instacart Delivery</h3>
+              <h3 className="text-lg font-semibold mb-4">Instacart Delivery</h3>
               <div className="space-y-4">
                 <div className="text-sm text-gray-600">
                   Order your groceries for delivery or pickup from your favorite local stores.

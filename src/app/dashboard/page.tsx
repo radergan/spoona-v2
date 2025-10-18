@@ -15,18 +15,41 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="flex items-center mb-4">
-              <div className="text-3xl mr-4">🍳</div>
-              <h3 className="text-lg font-semibold">My Recipes</h3>
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">My Recipes</h3>
+                <p className="text-sm text-gray-600">Manage and organize your recipe collection</p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <Link href="/recipes" className="text-orange-600 hover:text-orange-700 font-medium">
+                  View Recipes →
+                </Link>
+              </div>
             </div>
-            <p className="text-gray-600 mb-4">Browse and manage your recipe collection</p>
-            <a href="/recipes" className="text-orange-600 hover:text-orange-700 font-medium">
-              View Recipes →
-            </a>
-          </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Meal Planning</h3>
+                <p className="text-sm text-gray-600">Plan your weekly meals and generate shopping lists</p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <Link href="/meal-planning" className="text-orange-600 hover:text-orange-700 font-medium">
+                  Plan Meals →
+                </Link>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Shopping Lists</h3>
+                <p className="text-sm text-gray-600">Create and manage your shopping lists</p>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <Link href="/shopping" className="text-orange-600 hover:text-orange-700 font-medium">
+                  View Lists →
+                </Link>
+              </div>
+            </div>          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <div className="flex items-center mb-4">
               <div className="text-3xl mr-4">📅</div>
               <h3 className="text-lg font-semibold">Meal Planning</h3>

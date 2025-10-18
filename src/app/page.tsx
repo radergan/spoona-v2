@@ -15,19 +15,16 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-4xl mb-4">🍳</div>
               <h3 className="text-lg font-semibold mb-2">Recipe Management</h3>
               <p className="text-gray-600">Create, organize, and discover delicious recipes</p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-4xl mb-4">📅</div>
               <h3 className="text-lg font-semibold mb-2">Meal Planning</h3>
               <p className="text-gray-600">Plan your weekly meals with drag-and-drop simplicity</p>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <div className="text-4xl mb-4">🛒</div>
               <h3 className="text-lg font-semibold mb-2">Smart Shopping</h3>
               <p className="text-gray-600">Generate shopping lists with Instacart integration</p>
             </div>

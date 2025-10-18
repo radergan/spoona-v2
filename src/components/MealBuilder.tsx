@@ -194,14 +194,12 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
             
             {searchQuery.length >= 2 && searchResults.length === 0 && !isSearching && (
               <div className="text-center py-8 text-gray-500">
-                <div className="text-4xl mb-2">🔍</div>
                 <p>No products found for &quot;{searchQuery}&quot;</p>
               </div>
             )}
             
             {searchQuery.length < 2 && (
               <div className="text-center py-8 text-gray-400">
-                <div className="text-4xl mb-2">🥕</div>
                 <p>Start typing to search for ingredients...</p>
               </div>
             )}
@@ -282,7 +280,6 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
               
               {selectedItems.length === 0 && (
                 <div className="text-center py-8 text-gray-400">
-                  <div className="text-4xl mb-2">🍽️</div>
                   <p>No items added yet</p>
                   <p className="text-sm">Search and add ingredients above</p>
                 </div>
