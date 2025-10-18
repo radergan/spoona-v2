@@ -44,7 +44,7 @@ export default function ShoppingPage() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold">This Week's Shopping List</h2>
+                  <h2 className="text-xl font-semibold">This Week&apos;s Shopping List</h2>
                   <div className="text-sm text-gray-500">
                     {checkedItems} of {totalItems} items
                   </div>

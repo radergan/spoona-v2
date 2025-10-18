@@ -115,7 +115,7 @@ export default function MealPlanningPage() {
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold mb-4">This Week's Summary</h3>
+            <h3 className="text-lg font-semibold mb-4">This Week&apos;s Summary</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Planned Meals:</span>
