@@ -1,19 +1,78 @@
 'use client'
 
+import { useState } from 'react'
 import { MainNavigation } from '@/components/MainNavigation'
+import { MealBuilder } from '@/components/MealBuilder'
+import { RecipeSelectionModal } from '@/components/RecipeSelectionModal'
+import { SavedMealsModal } from '@/components/SavedMealsModal'
+
+type ModalType = null | 'recipe' | 'savedMeal' | 'mealBuilder'
+
+interface MealPlanItem {
+  type: 'recipe' | 'savedMeal'
+  name: string
+  emoji: string
+}
 
 export default function MealPlanningPage() {
+  const [activeModal, setActiveModal] = useState<ModalType>(null)
+  const [selectedCell, setSelectedCell] = useState<{ day: string; mealType: string } | null>(null)
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   const mealTypes = ['Breakfast', 'Lunch', 'Dinner']
 
   // Sample meal plan data
-  const sampleMeals = {
-    'Monday-Breakfast': { name: 'Oatmeal with Berries', emoji: '🥣' },
-    'Monday-Dinner': { name: 'Chicken Parmesan', emoji: '🍗' },
-    'Tuesday-Lunch': { name: 'Caesar Salad', emoji: '🥗' },
-    'Wednesday-Dinner': { name: 'Beef Stir Fry', emoji: '🥘' },
-    'Friday-Breakfast': { name: 'Pancakes', emoji: '🥞' },
-    'Sunday-Dinner': { name: 'Roast Chicken', emoji: '🍖' }
+  const [mealPlan, setMealPlan] = useState<Record<string, MealPlanItem>>({
+    'Monday-Breakfast': { type: 'recipe', name: 'Oatmeal with Berries', emoji: '🥣' },
+    'Monday-Dinner': { type: 'recipe', name: 'Chicken Parmesan', emoji: '🍗' },
+    'Tuesday-Lunch': { type: 'savedMeal', name: 'Caesar Salad', emoji: '🥗' },
+    'Wednesday-Dinner': { type: 'recipe', name: 'Beef Stir Fry', emoji: '🥘' },
+    'Friday-Breakfast': { type: 'recipe', name: 'Pancakes', emoji: '🥞' },
+    'Sunday-Dinner': { type: 'recipe', name: 'Roast Chicken', emoji: '🍖' }
+  })
+
+  const handleCellClick = (day: string, mealType: string) => {
+    setSelectedCell({ day, mealType })
+    // Show meal selection options
+  }
+
+  const handleAddMeal = (type: 'recipe' | 'savedMeal' | 'mealBuilder') => {
+    setActiveModal(type)
+  }
+
+  const handleRecipeSelect = (recipe: any) => {
+    if (selectedCell) {
+      const key = `${selectedCell.day}-${selectedCell.mealType}`
+      setMealPlan(prev => ({
+        ...prev,
+        [key]: { type: 'recipe', name: recipe.title, emoji: '🍽️' }
+      }))
+    }
+    setActiveModal(null)
+    setSelectedCell(null)
+  }
+
+  const handleSavedMealSelect = (meal: any) => {
+    if (selectedCell) {
+      const key = `${selectedCell.day}-${selectedCell.mealType}`
+      setMealPlan(prev => ({
+        ...prev,
+        [key]: { type: 'savedMeal', name: meal.name, emoji: '🥗' }
+      }))
+    }
+    setActiveModal(null)
+    setSelectedCell(null)
+  }
+
+  const handleMealBuilderSave = (meal: any) => {
+    if (selectedCell) {
+      const key = `${selectedCell.day}-${selectedCell.mealType}`
+      setMealPlan(prev => ({
+        ...prev,
+        [key]: { type: 'savedMeal', name: meal.name, emoji: '🍽️' }
+      }))
+    }
+    setActiveModal(null)
+    setSelectedCell(null)
   }
 
   return (
@@ -69,7 +128,7 @@ export default function MealPlanningPage() {
               </div>
               {daysOfWeek.map((day) => {
                 const mealKey = `${day}-${mealType}`
-                const meal = sampleMeals[mealKey as keyof typeof sampleMeals]
+                const meal = mealPlan[mealKey]
                 
                 return (
                   <div key={`${day}-${mealType}`} className="p-4 border-l border-gray-200 min-h-[100px] hover:bg-gray-50 transition-colors">
@@ -77,9 +136,15 @@ export default function MealPlanningPage() {
                       <div className="bg-orange-100 border border-orange-200 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition-colors">
                         <div className="text-lg mb-1">{meal.emoji}</div>
                         <div className="text-sm font-medium text-gray-800">{meal.name}</div>
+                        <div className="text-xs text-orange-600 mt-1">
+                          {meal.type === 'recipe' ? '📖 Recipe' : '🥗 Custom'}
+                        </div>
                       </div>
                     ) : (
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition-colors h-full flex items-center justify-center">
+                      <div 
+                        onClick={() => handleCellClick(day, mealType)}
+                        className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition-colors h-full flex items-center justify-center"
+                      >
                         <span className="text-gray-400 text-sm">+ Add meal</span>
                       </div>
                     )}
@@ -137,6 +202,95 @@ export default function MealPlanningPage() {
             </div>
           </div>
         </div>
+
+        {/* Meal Selection Popup */}
+        {selectedCell && !activeModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
+            <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
+              <h3 className="text-lg font-semibold mb-4">
+                Add meal for {selectedCell.day} {selectedCell.mealType}
+              </h3>
+              <div className="space-y-3">
+                <button
+                  onClick={() => handleAddMeal('recipe')}
+                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">📖</span>
+                    <div>
+                      <div className="font-medium">From Recipe</div>
+                      <div className="text-sm text-gray-600">Choose from your recipe collection</div>
+                    </div>
+                  </div>
+                </button>
+                
+                <button
+                  onClick={() => handleAddMeal('savedMeal')}
+                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">🥗</span>
+                    <div>
+                      <div className="font-medium">Saved Meal</div>
+                      <div className="text-sm text-gray-600">Choose from your custom meals</div>
+                    </div>
+                  </div>
+                </button>
+                
+                <button
+                  onClick={() => handleAddMeal('mealBuilder')}
+                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">🛒</span>
+                    <div>
+                      <div className="font-medium">Build New Meal</div>
+                      <div className="text-sm text-gray-600">Create from Instacart products</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+              
+              <button
+                onClick={() => setSelectedCell(null)}
+                className="mt-4 w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modals */}
+        <RecipeSelectionModal
+          isOpen={activeModal === 'recipe'}
+          onClose={() => {
+            setActiveModal(null)
+            setSelectedCell(null)
+          }}
+          onSelectRecipe={handleRecipeSelect}
+        />
+
+        <SavedMealsModal
+          isOpen={activeModal === 'savedMeal'}
+          onClose={() => {
+            setActiveModal(null)
+            setSelectedCell(null)
+          }}
+          onSelectMeal={handleSavedMealSelect}
+        />
+
+        {activeModal === 'mealBuilder' && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <MealBuilder
+              onSave={handleMealBuilderSave}
+              onCancel={() => {
+                setActiveModal(null)
+                setSelectedCell(null)
+              }}
+            />
+          </div>
+        )}
       </main>
     </div>
   )
