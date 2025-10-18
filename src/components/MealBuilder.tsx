@@ -24,26 +24,47 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
   const [searchResults, setSearchResults] = useState<InstacartProduct[]>([])
   const [isSearching, setIsSearching] = useState(false)
 
-  // Mock Instacart API data - in real app this would be an API call
-  const mockInstacartSearch = async (query: string): Promise<InstacartProduct[]> => {
-    await new Promise(resolve => setTimeout(resolve, 300)) // Simulate API delay
-    
-    const mockProducts: InstacartProduct[] = [
-      { id: '1', name: 'Organic Chicken Breast', brand: 'Bell & Evans', category: 'Meat & Seafood', price: 8.99 },
-      { id: '2', name: 'Roma Tomatoes', category: 'Produce', price: 2.49 },
-      { id: '3', name: 'Fresh Basil', category: 'Produce', price: 2.99 },
-      { id: '4', name: 'Mozzarella Cheese', brand: 'Galbani', category: 'Dairy', price: 4.29 },
-      { id: '5', name: 'Olive Oil', brand: 'Bertolli', category: 'Pantry', price: 6.99 },
-      { id: '6', name: 'Yellow Onion', category: 'Produce', price: 1.29 },
-      { id: '7', name: 'Garlic Cloves', category: 'Produce', price: 0.89 },
-      { id: '8', name: 'Bell Peppers', category: 'Produce', price: 2.97 },
-    ]
+  // Real Instacart API search
+  const searchInstacartProducts = async (query: string): Promise<InstacartProduct[]> => {
+    try {
+      const response = await fetch('/api/instacart/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      })
 
-    return mockProducts.filter(product => 
-      product.name.toLowerCase().includes(query.toLowerCase()) ||
-      product.category.toLowerCase().includes(query.toLowerCase()) ||
-      (product.brand && product.brand.toLowerCase().includes(query.toLowerCase()))
-    )
+      if (!response.ok) {
+        throw new Error('Failed to search products')
+      }
+
+      const data = await response.json()
+      return data.products || []
+    } catch (error) {
+      console.error('Instacart search error:', error)
+      
+      // Fallback to mock data if API fails
+      const mockProducts: InstacartProduct[] = [
+        { id: '1', name: 'Organic Chicken Breast', brand: 'Bell & Evans', category: 'Meat & Seafood', price: 8.99 },
+        { id: '2', name: 'Roma Tomatoes', category: 'Produce', price: 2.49 },
+        { id: '3', name: 'Fresh Basil', category: 'Produce', price: 2.99 },
+        { id: '4', name: 'Mozzarella Cheese', brand: 'Galbani', category: 'Dairy', price: 4.29 },
+        { id: '5', name: 'Olive Oil', brand: 'Bertolli', category: 'Pantry', price: 6.99 },
+        { id: '6', name: 'Yellow Onion', category: 'Produce', price: 1.29 },
+        { id: '7', name: 'Garlic Cloves', category: 'Produce', price: 0.89 },
+        { id: '8', name: 'Bell Peppers', category: 'Produce', price: 2.97 },
+        { id: '9', name: 'Apple', category: 'Produce', price: 1.99 },
+        { id: '10', name: 'Green Apple', brand: 'Granny Smith', category: 'Produce', price: 2.29 },
+        { id: '11', name: 'Red Apple', brand: 'Gala', category: 'Produce', price: 2.19 },
+      ]
+
+      return mockProducts.filter(product => 
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.category.toLowerCase().includes(query.toLowerCase()) ||
+        (product.brand && product.brand.toLowerCase().includes(query.toLowerCase()))
+      )
+    }
   }
 
   const handleSearch = async (query: string) => {
@@ -54,7 +75,7 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
 
     setIsSearching(true)
     try {
-      const results = await mockInstacartSearch(query)
+      const results = await searchInstacartProducts(query)
       setSearchResults(results)
     } catch (error) {
       console.error('Search error:', error)

@@ -75,6 +75,15 @@ export default function MealPlanningPage() {
     setSelectedCell(null)
   }
 
+  const handleRemoveMeal = (day: string, mealType: string) => {
+    const key = `${day}-${mealType}`
+    setMealPlan(prev => {
+      const newPlan = { ...prev }
+      delete newPlan[key]
+      return newPlan
+    })
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <MainNavigation />
@@ -133,12 +142,21 @@ export default function MealPlanningPage() {
                 return (
                   <div key={`${day}-${mealType}`} className="p-4 border-l border-gray-200 min-h-[100px] hover:bg-gray-50 transition-colors">
                     {meal ? (
-                      <div className="bg-orange-100 border border-orange-200 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition-colors">
+                      <div className="bg-orange-100 border border-orange-200 rounded-lg p-3 cursor-pointer hover:bg-orange-200 transition-colors group relative">
                         <div className="text-lg mb-1">{meal.emoji}</div>
                         <div className="text-sm font-medium text-gray-800">{meal.name}</div>
                         <div className="text-xs text-orange-600 mt-1">
                           {meal.type === 'recipe' ? '📖 Recipe' : '🥗 Custom'}
                         </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleRemoveMeal(day, mealType)
+                          }}
+                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs transition-all"
+                        >
+                          ×
+                        </button>
                       </div>
                     ) : (
                       <div 
@@ -205,11 +223,27 @@ export default function MealPlanningPage() {
 
         {/* Meal Selection Popup */}
         {selectedCell && !activeModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
-            <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
-              <h3 className="text-lg font-semibold mb-4">
-                Add meal for {selectedCell.day} {selectedCell.mealType}
-              </h3>
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4"
+            onClick={() => setSelectedCell(null)}
+          >
+            <div 
+              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">
+                  Add meal for {selectedCell.day} {selectedCell.mealType}
+                </h3>
+                <button
+                  onClick={() => setSelectedCell(null)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               <div className="space-y-3">
                 <button
                   onClick={() => handleAddMeal('recipe')}
@@ -281,14 +315,22 @@ export default function MealPlanningPage() {
         />
 
         {activeModal === 'mealBuilder' && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <MealBuilder
-              onSave={handleMealBuilderSave}
-              onCancel={() => {
-                setActiveModal(null)
-                setSelectedCell(null)
-              }}
-            />
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={() => {
+              setActiveModal(null)
+              setSelectedCell(null)
+            }}
+          >
+            <div onClick={(e) => e.stopPropagation()}>
+              <MealBuilder
+                onSave={handleMealBuilderSave}
+                onCancel={() => {
+                  setActiveModal(null)
+                  setSelectedCell(null)
+                }}
+              />
+            </div>
           </div>
         )}
       </main>
