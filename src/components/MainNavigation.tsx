@@ -20,26 +20,26 @@ export function MainNavigation() {
   ]
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200">
-      <div className="container mx-auto px-4">
+    <nav className="bg-gh-canvas-default border-b border-gh-border-default shadow-gh-sm">
+      <div className="container mx-auto px-gh-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/dashboard" className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent">
+          <Link href="/dashboard" className="text-xl font-semibold text-gh-fg-default hover:text-gh-accent-fg transition-colors">
             Spoona
           </Link>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center px-gh-3 py-1.5 rounded-gh-sm text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-orange-100 text-orange-700'
-                      : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50'
+                      ? 'bg-gh-accent-subtle text-gh-accent-fg border border-gh-accent-muted'
+                      : 'text-gh-fg-muted hover:text-gh-fg-default hover:bg-gh-neutral-muted'
                   }`}
                 >
                   {item.label}
@@ -49,24 +49,26 @@ export function MainNavigation() {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center space-x-4">
-            <span className="text-gray-600 text-sm">
+          <div className="flex items-center space-x-gh-3">
+            <span className="text-gh-fg-muted text-sm hidden sm:block">
               {session?.user?.name || session?.user?.email}
             </span>
-            <button className="text-gray-600 hover:text-orange-600 transition-colors">
-              <span>👤</span>
+            <button className="p-gh-2 text-gh-fg-muted hover:text-gh-fg-default hover:bg-gh-neutral-muted rounded-gh-sm transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
             </button>
             <button 
               onClick={handleSignOut}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              className="bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis px-gh-3 py-1.5 rounded-gh-sm text-sm font-medium transition-colors shadow-gh-sm"
             >
               Sign Out
             </button>
           </div>
 
           {/* Mobile menu button */}
-          <button className="md:hidden text-gray-600 hover:text-orange-600">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button className="md:hidden p-gh-2 text-gh-fg-muted hover:text-gh-fg-default hover:bg-gh-neutral-muted rounded-gh-sm transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>

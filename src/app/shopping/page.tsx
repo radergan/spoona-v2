@@ -21,39 +21,39 @@ export default function ShoppingPage() {
   const totalCost = sampleShoppingList.reduce((sum, item) => sum + item.price, 0)
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gh-canvas-inset">
       <MainNavigation />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+      <main className="container mx-auto px-gh-6 py-gh-6">
+        <div className="flex justify-between items-start mb-gh-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Shopping Lists</h1>
-            <p className="text-gray-600">Manage your shopping lists and order through Instacart</p>
+            <h1 className="text-2xl font-semibold text-gh-fg-default mb-gh-2">Shopping Lists</h1>
+            <p className="text-gh-fg-muted">Manage your shopping lists and order through Instacart</p>
           </div>
-          <div className="flex gap-3">
-            <button className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
+          <div className="flex gap-gh-2">
+            <button className="bg-gh-canvas-default border border-gh-border-default hover:bg-gh-canvas-subtle text-gh-fg-default px-gh-3 py-1.5 rounded-gh-sm text-sm font-medium transition-colors">
               New List
             </button>
-            <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+            <button className="bg-gh-success-emphasis hover:bg-gh-success-fg text-gh-fg-onEmphasis px-gh-4 py-1.5 rounded-gh-sm text-sm font-medium transition-colors">
               Order with Instacart
             </button>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-gh-6">
           {/* Shopping List */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-              <div className="p-6 border-b border-gray-200">
+            <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md shadow-gh-sm">
+              <div className="p-gh-4 border-b border-gh-border-muted">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold">This Week&apos;s Shopping List</h2>
-                  <div className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-gh-fg-default">This Week&apos;s Shopping List</h2>
+                  <div className="text-sm text-gh-fg-muted">
                     {checkedItems} of {totalItems} items
                   </div>
                 </div>
-                <div className="mt-2 bg-gray-200 rounded-full h-2">
+                <div className="mt-gh-2 bg-gh-neutral-muted rounded-full h-2">
                   <div 
-                    className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-gh-success-emphasis h-2 rounded-full transition-all duration-300"
                     style={{ width: `${(checkedItems / totalItems) * 100}%` }}
                   ></div>
                 </div>
@@ -63,30 +63,30 @@ export default function ShoppingPage() {
                 const categoryItems = sampleShoppingList.filter(item => item.category === category)
                 
                 return (
-                  <div key={category} className="border-b border-gray-200 last:border-b-0">
-                    <div className="p-4 bg-gray-50">
-                      <h3 className="font-medium text-gray-700">{category}</h3>
+                  <div key={category} className="border-b border-gh-border-muted last:border-b-0">
+                    <div className="p-gh-3 bg-gh-canvas-subtle">
+                      <h3 className="font-medium text-gh-fg-default text-sm">{category}</h3>
                     </div>
-                    <div className="divide-y divide-gray-100">
+                    <div className="divide-y divide-gh-border-subtle">
                       {categoryItems.map(item => (
-                        <div key={item.id} className={`p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors ${item.checked ? 'opacity-60' : ''}`}>
+                        <div key={item.id} className={`p-gh-3 flex items-center gap-gh-3 hover:bg-gh-canvas-subtle transition-colors ${item.checked ? 'opacity-60' : ''}`}>
                           <input
                             type="checkbox"
                             checked={item.checked}
                             onChange={() => {}}
-                            className="w-5 h-5 text-green-600 rounded focus:ring-green-500"
+                            className="w-4 h-4 text-gh-success-emphasis rounded focus:ring-gh-success-emphasis border-gh-border-default"
                           />
                           <div className="flex-1">
-                            <div className={`font-medium ${item.checked ? 'line-through text-gray-500' : 'text-gray-900'}`}>
+                            <div className={`font-medium text-sm ${item.checked ? 'line-through text-gh-fg-muted' : 'text-gh-fg-default'}`}>
                               {item.name}
                             </div>
-                            <div className="text-sm text-gray-500">{item.quantity}</div>
+                            <div className="text-xs text-gh-fg-muted">{item.quantity}</div>
                           </div>
                           <div className="text-right">
-                            <div className="font-medium text-gray-900">${item.price.toFixed(2)}</div>
+                            <div className="font-medium text-gh-fg-default text-sm">${item.price.toFixed(2)}</div>
                           </div>
-                          <button className="text-gray-400 hover:text-red-500 transition-colors">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <button className="text-gh-fg-muted hover:text-gh-danger-fg transition-colors p-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                           </button>
@@ -98,14 +98,14 @@ export default function ShoppingPage() {
               })}
 
               {/* Add Item */}
-              <div className="p-4 border-t border-gray-200">
-                <div className="flex gap-3">
+              <div className="p-gh-3 border-t border-gh-border-muted">
+                <div className="flex gap-gh-2">
                   <input
                     type="text"
                     placeholder="Add new item..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="flex-1 px-gh-3 py-2 text-sm border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors"
                   />
-                  <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md font-medium transition-colors">
+                  <button className="bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis px-gh-4 py-2 rounded-gh-sm text-sm font-medium transition-colors">
                     Add
                   </button>
                 </div>
@@ -114,73 +114,73 @@ export default function ShoppingPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-gh-4">
             {/* Summary */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold mb-4">Summary</h3>
-              <div className="space-y-3">
+            <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md p-gh-4 shadow-gh-sm">
+              <h3 className="text-base font-semibold text-gh-fg-default mb-gh-4">Summary</h3>
+              <div className="space-y-gh-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Total Items:</span>
-                  <span className="font-medium">{totalItems}</span>
+                  <span className="text-gh-fg-muted text-sm">Total Items:</span>
+                  <span className="font-medium text-gh-fg-default text-sm">{totalItems}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Completed:</span>
-                  <span className="font-medium text-green-600">{checkedItems}</span>
+                  <span className="text-gh-fg-muted text-sm">Completed:</span>
+                  <span className="font-medium text-gh-success-fg text-sm">{checkedItems}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Remaining:</span>
-                  <span className="font-medium text-orange-600">{totalItems - checkedItems}</span>
+                  <span className="text-gh-fg-muted text-sm">Remaining:</span>
+                  <span className="font-medium text-gh-severe-fg text-sm">{totalItems - checkedItems}</span>
                 </div>
-                <div className="border-t pt-3 mt-3">
-                  <div className="flex justify-between text-lg">
-                    <span className="font-semibold">Estimated Total:</span>
-                    <span className="font-bold text-green-600">${totalCost.toFixed(2)}</span>
+                <div className="border-t border-gh-border-muted pt-gh-3 mt-gh-3">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-gh-fg-default">Estimated Total:</span>
+                    <span className="font-bold text-gh-success-fg">${totalCost.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Instacart Integration */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold mb-4">Instacart Delivery</h3>
-              <div className="space-y-4">
-                <div className="text-sm text-gray-600">
+            <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md p-gh-4 shadow-gh-sm">
+              <h3 className="text-base font-semibold text-gh-fg-default mb-gh-4">Instacart Delivery</h3>
+              <div className="space-y-gh-3">
+                <div className="text-sm text-gh-fg-muted">
                   Order your groceries for delivery or pickup from your favorite local stores.
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-gh-2">
                   <div className="text-sm">
-                    <span className="font-medium">Delivery:</span> As soon as 30 min
+                    <span className="font-medium text-gh-fg-default">Delivery:</span> <span className="text-gh-fg-muted">As soon as 30 min</span>
                   </div>
                   <div className="text-sm">
-                    <span className="font-medium">Pickup:</span> As soon as 15 min
+                    <span className="font-medium text-gh-fg-default">Pickup:</span> <span className="text-gh-fg-muted">As soon as 15 min</span>
                   </div>
                 </div>
-                <button className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-md font-medium transition-colors">
+                <button className="w-full bg-gh-success-emphasis hover:bg-gh-success-fg text-gh-fg-onEmphasis py-2 px-gh-3 rounded-gh-sm text-sm font-medium transition-colors">
                   Order with Instacart
                 </button>
-                <div className="text-xs text-gray-500 text-center">
+                <div className="text-xs text-gh-fg-muted text-center">
                   Powered by Instacart API
                 </div>
               </div>
             </div>
 
             {/* Recent Lists */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold mb-4">Recent Lists</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+            <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md p-gh-4 shadow-gh-sm">
+              <h3 className="text-base font-semibold text-gh-fg-default mb-gh-4">Recent Lists</h3>
+              <div className="space-y-gh-2">
+                <div className="flex justify-between items-center p-gh-2 bg-gh-canvas-subtle rounded-gh-sm">
                   <div>
-                    <div className="font-medium text-sm">Weekly Groceries</div>
-                    <div className="text-xs text-gray-500">Oct 14, 2025</div>
+                    <div className="font-medium text-sm text-gh-fg-default">Weekly Groceries</div>
+                    <div className="text-xs text-gh-fg-muted">Oct 14, 2025</div>
                   </div>
-                  <span className="text-xs text-green-600">Completed</span>
+                  <span className="text-xs text-gh-success-fg font-medium">Completed</span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-md">
+                <div className="flex justify-between items-center p-gh-2 bg-gh-canvas-subtle rounded-gh-sm">
                   <div>
-                    <div className="font-medium text-sm">Party Supplies</div>
-                    <div className="text-xs text-gray-500">Oct 10, 2025</div>
+                    <div className="font-medium text-sm text-gh-fg-default">Party Supplies</div>
+                    <div className="text-xs text-gh-fg-muted">Oct 10, 2025</div>
                   </div>
-                  <span className="text-xs text-green-600">Completed</span>
+                  <span className="text-xs text-gh-success-fg font-medium">Completed</span>
                 </div>
               </div>
             </div>
