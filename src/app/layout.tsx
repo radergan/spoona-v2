@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { Providers } from '@/components/Providers'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -9,8 +8,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Spoona - Smart Recipe & Meal Planning',
-  description: 'Plan your meals, create recipes, and shop with Instacart integration',
+  title: 'Spoona',
+  description: 'Spoona',
 }
 
 export default function RootLayout({
@@ -21,9 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <Providers>
-          {children}
-        </Providers>
+        {children}
       </body>
     </html>
   )
