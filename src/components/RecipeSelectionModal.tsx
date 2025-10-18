@@ -88,21 +88,21 @@ export function RecipeSelectionModal({ isOpen, onClose, onSelectRecipe }: Recipe
       onKeyDown={(e) => e.key === 'Escape' && onClose()}
     >
       <div 
-        className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+        className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md shadow-gh-lg max-w-4xl w-full max-h-[90vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 bg-orange-50">
+        <div className="p-gh-4 border-b border-gh-border-muted bg-gh-canvas-subtle">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Select a Recipe</h2>
-              <p className="text-gray-600 mt-1">Choose from your recipe collection</p>
+              <h2 className="text-xl font-semibold text-gh-fg-default">Select a Recipe</h2>
+              <p className="text-gh-fg-muted mt-1 text-sm">Choose from your recipe collection</p>
             </div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gh-fg-muted hover:text-gh-fg-default transition-colors p-gh-2 rounded-gh-sm hover:bg-gh-neutral-muted"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -110,77 +110,77 @@ export function RecipeSelectionModal({ isOpen, onClose, onSelectRecipe }: Recipe
         </div>
 
         {/* Search */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="p-gh-4 border-b border-gh-border-muted">
           <div className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search recipes by name, description, or tags..."
-              className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full px-gh-3 py-2 pl-8 text-sm border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors"
             />
-            <svg className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-2.5 h-4 w-4 text-gh-fg-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
         </div>
 
         {/* Recipe List */}
-        <div className="p-6 overflow-y-auto max-h-96">
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="p-gh-4 overflow-y-auto max-h-96">
+          <div className="grid md:grid-cols-2 gap-gh-3">
             {filteredRecipes.map((recipe) => (
               <div
                 key={recipe.id}
                 onClick={() => onSelectRecipe(recipe)}
-                className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 cursor-pointer transition-all"
+                className="p-gh-3 border border-gh-border-default rounded-gh-sm hover:border-gh-accent-muted hover:bg-gh-accent-subtle cursor-pointer transition-all"
               >
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start justify-between mb-gh-3">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1">{recipe.title}</h3>
+                    <h3 className="font-semibold text-gh-fg-default mb-1">{recipe.title}</h3>
                     {recipe.description && (
-                      <p className="text-sm text-gray-600 mb-2">{recipe.description}</p>
+                      <p className="text-sm text-gh-fg-muted mb-2">{recipe.description}</p>
                     )}
                   </div>
 
                 </div>
 
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                <div className="flex items-center justify-between text-sm text-gh-fg-muted mb-gh-3">
                   <div className="flex items-center space-x-4">
                     {recipe.cookTime && (
                       <span className="flex items-center">
-                        ⏱️ {recipe.cookTime} min
+                        Cook: {recipe.cookTime} min
                       </span>
                     )}
                     {recipe.servings && (
                       <span className="flex items-center">
-                        👥 {recipe.servings} servings
+                        Serves: {recipe.servings}
                       </span>
                     )}
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1">
                   {recipe.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                      className="px-2 py-0.5 bg-gh-neutral-muted text-gh-fg-default text-xs rounded-full"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <div className="text-orange-600 text-sm font-medium">Click to add to meal plan →</div>
+                <div className="mt-gh-3 pt-gh-3 border-t border-gh-border-muted">
+                  <div className="text-gh-accent-fg text-sm font-medium">Click to add to meal plan →</div>
                 </div>
               </div>
             ))}
           </div>
 
           {filteredRecipes.length === 0 && (
-            <div className="text-center py-12">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No recipes found</h3>
-              <p className="text-gray-600">
+            <div className="text-center py-gh-8">
+              <h3 className="text-lg font-medium text-gh-fg-default mb-2">No recipes found</h3>
+              <p className="text-gh-fg-muted">
                 {searchQuery 
                   ? `No recipes match "${searchQuery}". Try a different search term.`
                   : 'You don\'t have any recipes yet. Create some recipes first!'
@@ -191,19 +191,19 @@ export function RecipeSelectionModal({ isOpen, onClose, onSelectRecipe }: Recipe
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
+        <div className="p-gh-4 border-t border-gh-border-muted bg-gh-canvas-subtle">
           <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gh-fg-muted">
               {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''} available
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-gh-2">
               <button
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                className="px-gh-3 py-2 border border-gh-border-default text-gh-fg-default rounded-gh-sm hover:bg-gh-canvas-subtle transition-colors text-sm"
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md font-medium transition-colors">
+              <button className="px-gh-3 py-2 bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis rounded-gh-sm font-medium transition-colors text-sm">
                 + Create New Recipe
               </button>
             </div>

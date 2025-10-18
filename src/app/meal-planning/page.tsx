@@ -235,9 +235,12 @@ export default function MealPlanningPage() {
                             e.stopPropagation()
                             handleRemoveMeal(day, mealType)
                           }}
-                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-gh-danger-emphasis hover:bg-gh-danger-fg text-gh-fg-onEmphasis rounded-full w-4 h-4 flex items-center justify-center text-xs transition-all"
+                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 bg-gh-danger-emphasis hover:bg-gh-danger-fg text-gh-fg-onEmphasis rounded-gh-sm w-5 h-5 flex items-center justify-center transition-all shadow-gh-sm"
+                          title="Remove meal"
                         >
-                          ×
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
                         </button>
                       </div>
                     ) : (

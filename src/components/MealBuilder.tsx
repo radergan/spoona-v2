@@ -133,20 +133,20 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
   const totalCost = selectedItems.reduce((sum, item) => sum + (item.product.price || 0), 0)
 
   return (
-    <div className="bg-white rounded-lg shadow-lg max-w-4xl mx-auto max-h-[90vh] overflow-hidden">
+    <div className="bg-gh-canvas-default rounded-gh-md shadow-gh-lg max-w-4xl mx-auto max-h-[90vh] overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 bg-orange-50">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Build Custom Meal</h2>
-        <p className="text-gray-600">Create a meal from individual ingredients and products</p>
+      <div className="p-gh-4 border-b border-gh-border-muted bg-gh-canvas-subtle">
+        <h2 className="text-2xl font-bold text-gh-fg-default mb-2">Build Custom Meal</h2>
+        <p className="text-gh-fg-muted">Create a meal from individual ingredients and products</p>
       </div>
 
       <div className="flex flex-col lg:flex-row h-full">
         {/* Left Side - Product Search */}
-        <div className="lg:w-1/2 p-6 border-r border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Find Ingredients</h3>
+        <div className="lg:w-1/2 p-gh-4 border-r border-gh-border-default">
+          <h3 className="text-lg font-semibold mb-gh-4 text-gh-fg-default">Find Ingredients</h3>
           
           {/* Search Input */}
-          <div className="relative mb-4">
+          <div className="relative mb-gh-4">
             <input
               type="text"
               value={searchQuery}
@@ -155,11 +155,11 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
                 handleSearch(e.target.value)
               }}
               placeholder="Search for ingredients, products, brands..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full px-gh-3 py-3 border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors"
             />
             {isSearching && (
               <div className="absolute right-3 top-3">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500"></div>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gh-accent-emphasis"></div>
               </div>
             )}
           </div>
@@ -169,22 +169,22 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
             {searchResults.map((product) => (
               <div
                 key={product.id}
-                className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                className="p-gh-3 border border-gh-border-default rounded-gh-sm hover:bg-gh-accent-subtle cursor-pointer transition-colors"
                 onClick={() => addItem(product)}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900">{product.name}</div>
+                    <div className="font-medium text-gh-fg-default">{product.name}</div>
                     {product.brand && (
-                      <div className="text-sm text-gray-500">{product.brand}</div>
+                      <div className="text-sm text-gh-fg-muted">{product.brand}</div>
                     )}
-                    <div className="text-sm text-orange-600">{product.category}</div>
+                    <div className="text-sm text-gh-accent-fg">{product.category}</div>
                   </div>
                   <div className="text-right">
                     {product.price && (
-                      <div className="font-semibold text-green-600">${product.price.toFixed(2)}</div>
+                      <div className="font-semibold text-gh-success-fg">${product.price.toFixed(2)}</div>
                     )}
-                    <button className="text-xs bg-orange-500 text-white px-2 py-1 rounded mt-1 hover:bg-orange-600 transition-colors">
+                    <button className="text-xs bg-gh-accent-emphasis text-gh-fg-onEmphasis px-2 py-1 rounded-gh-sm mt-1 hover:bg-gh-accent-fg transition-colors">
                       + Add
                     </button>
                   </div>
@@ -193,13 +193,13 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
             ))}
             
             {searchQuery.length >= 2 && searchResults.length === 0 && !isSearching && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-gh-8 text-gh-fg-muted">
                 <p>No products found for &quot;{searchQuery}&quot;</p>
               </div>
             )}
             
             {searchQuery.length < 2 && (
-              <div className="text-center py-8 text-gray-400">
+              <div className="text-center py-gh-8 text-gh-fg-muted">
                 <p>Start typing to search for ingredients...</p>
               </div>
             )}
@@ -207,13 +207,13 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
         </div>
 
         {/* Right Side - Meal Builder */}
-        <div className="lg:w-1/2 p-6">
-          <h3 className="text-lg font-semibold mb-4">Your Custom Meal</h3>
+        <div className="lg:w-1/2 p-gh-4">
+          <h3 className="text-lg font-semibold mb-gh-4 text-gh-fg-default">Your Custom Meal</h3>
           
           {/* Meal Info */}
-          <div className="space-y-4 mb-6">
+          <div className="space-y-4 mb-gh-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gh-fg-default mb-1">
                 Meal Name *
               </label>
               <input
@@ -221,12 +221,12 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
                 value={mealName}
                 onChange={(e) => setMealName(e.target.value)}
                 placeholder="e.g., Chicken Caprese Bowl"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-gh-3 py-2 border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gh-fg-default mb-1">
                 Description (optional)
               </label>
               <textarea
@@ -234,23 +234,23 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
                 onChange={(e) => setMealDescription(e.target.value)}
                 placeholder="Brief description of your custom meal..."
                 rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full px-gh-3 py-2 border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default transition-colors"
               />
             </div>
           </div>
 
           {/* Selected Items */}
-          <div className="mb-6">
-            <h4 className="font-medium text-gray-700 mb-3">
+          <div className="mb-gh-4">
+            <h4 className="font-medium text-gh-fg-default mb-gh-3">
               Selected Items ({selectedItems.length})
             </h4>
             
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {selectedItems.map((item, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-center gap-gh-3 p-gh-3 bg-gh-canvas-subtle rounded-gh-sm">
                   <div className="flex-1">
-                    <div className="font-medium text-sm">{item.product.name}</div>
-                    <div className="text-xs text-gray-500">{item.product.category}</div>
+                    <div className="font-medium text-sm text-gh-fg-default">{item.product.name}</div>
+                    <div className="text-xs text-gh-fg-muted">{item.product.category}</div>
                   </div>
                   
                   <input
@@ -258,18 +258,18 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
                     value={item.amount}
                     onChange={(e) => updateItemAmount(index, e.target.value)}
                     placeholder="Amount"
-                    className="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-orange-500"
+                    className="w-20 px-2 py-1 text-sm border border-gh-border-default rounded-gh-sm focus:outline-none focus:border-gh-accent-emphasis bg-gh-canvas-default"
                   />
                   
                   {item.product.price && (
-                    <div className="text-sm font-medium text-green-600">
+                    <div className="text-sm font-medium text-gh-success-fg">
                       ${item.product.price.toFixed(2)}
                     </div>
                   )}
                   
                   <button
                     onClick={() => removeItem(index)}
-                    className="text-red-500 hover:text-red-700 transition-colors"
+                    className="text-gh-danger-fg hover:text-gh-danger-emphasis transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -279,7 +279,7 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
               ))}
               
               {selectedItems.length === 0 && (
-                <div className="text-center py-8 text-gray-400">
+                <div className="text-center py-gh-8 text-gh-fg-muted">
                   <p>No items added yet</p>
                   <p className="text-sm">Search and add ingredients above</p>
                 </div>
@@ -289,10 +289,10 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
 
           {/* Summary */}
           {selectedItems.length > 0 && (
-            <div className="mb-6 p-4 bg-green-50 rounded-lg">
+            <div className="mb-gh-4 p-gh-3 bg-gh-success-subtle rounded-gh-sm border border-gh-success-muted">
               <div className="flex justify-between items-center">
-                <span className="font-medium">Estimated Total:</span>
-                <span className="font-bold text-green-600 text-lg">
+                <span className="font-medium text-gh-fg-default">Estimated Total:</span>
+                <span className="font-bold text-gh-success-fg text-lg">
                   ${totalCost.toFixed(2)}
                 </span>
               </div>
@@ -300,17 +300,17 @@ export function MealBuilder({ onSave, onCancel }: MealBuilderProps) {
           )}
 
           {/* Actions */}
-          <div className="flex gap-3">
+          <div className="flex gap-gh-2">
             <button
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-gh-3 py-2 border border-gh-border-default text-gh-fg-default rounded-gh-sm hover:bg-gh-canvas-subtle transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={!mealName.trim() || selectedItems.length === 0}
-              className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white rounded-md font-medium transition-colors"
+              className="flex-1 px-gh-3 py-2 bg-gh-accent-emphasis hover:bg-gh-accent-fg disabled:bg-gh-neutral-muted disabled:text-gh-fg-disabled text-gh-fg-onEmphasis rounded-gh-sm font-medium transition-colors"
             >
               Save Meal
             </button>
