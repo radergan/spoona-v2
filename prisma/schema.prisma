@@ -124,12 +124,15 @@ model RecipeBookRecipe {
 }
 
 model SavedMeal {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  description String?
-  items       MealItem[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  description    String?
+  type           String   @default("product-based") // "recipe", "product-based", "mixed"
+  estimatedTotal Float?
+  prepTime       String?
+  items          MealItem[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
   
   userId      String   @db.ObjectId
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -138,10 +141,15 @@ model SavedMeal {
 }
 
 model MealItem {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  amount      String?
-  instacartId String?
+  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  brand              String?
+  category           String?
+  quantity           Float?
+  unit               String?
+  instacartSearchTerm String?
+  upc                String?
+  estimatedPrice     Float?
   
   savedMealId String    @db.ObjectId
   savedMeal   SavedMeal @relation(fields: [savedMealId], references: [id], onDelete: Cascade)

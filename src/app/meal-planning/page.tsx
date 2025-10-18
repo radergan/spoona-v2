@@ -3,15 +3,17 @@
 import { useState } from 'react'
 import { MainNavigation } from '@/components/MainNavigation'
 import { MealBuilder } from '@/components/MealBuilder'
+import { ProductMealBuilder } from '@/components/ProductMealBuilder'
 import { RecipeSelectionModal } from '@/components/RecipeSelectionModal'
 import { SavedMealsModal } from '@/components/SavedMealsModal'
 
-type ModalType = null | 'recipe' | 'savedMeal' | 'mealBuilder'
+type ModalType = null | 'recipe' | 'savedMeal' | 'mealBuilder' | 'productMeal'
 
 interface MealPlanItem {
-  type: 'recipe' | 'savedMeal'
+  type: 'recipe' | 'savedMeal' | 'productMeal'
   name: string
   emoji: string
+  estimatedPrice?: number
 }
 
 export default function MealPlanningPage() {
@@ -35,7 +37,7 @@ export default function MealPlanningPage() {
     // Show meal selection options
   }
 
-  const handleAddMeal = (type: 'recipe' | 'savedMeal' | 'mealBuilder') => {
+  const handleAddMeal = (type: 'recipe' | 'savedMeal' | 'mealBuilder' | 'productMeal') => {
     setActiveModal(type)
   }
 
@@ -75,6 +77,23 @@ export default function MealPlanningPage() {
     setSelectedCell(null)
   }
 
+  const handleProductMealSave = (meal: any) => {
+    if (selectedCell) {
+      const key = `${selectedCell.day}-${selectedCell.mealType}`
+      setMealPlan(prev => ({
+        ...prev,
+        [key]: { 
+          type: 'productMeal', 
+          name: meal.name, 
+          emoji: '🛒',
+          estimatedPrice: meal.estimatedTotal
+        }
+      }))
+    }
+    setActiveModal(null)
+    setSelectedCell(null)
+  }
+
   const handleRemoveMeal = (day: string, mealType: string) => {
     const key = `${day}-${mealType}`
     setMealPlan(prev => {
@@ -82,6 +101,52 @@ export default function MealPlanningPage() {
       delete newPlan[key]
       return newPlan
     })
+  }
+
+  const generateShoppingList = async () => {
+    try {
+      // Filter only product-based meals from the meal plan
+      const productMeals = Object.entries(mealPlan)
+        .filter(([_, meal]) => meal.type === 'productMeal')
+        .map(([key, meal]) => ({
+          id: key,
+          name: meal.name,
+          type: 'product-based' as const,
+          items: [] // This would come from saved meal data in a real implementation
+        }))
+
+      if (productMeals.length === 0) {
+        alert('No product-based meals found. Add some meals with products to generate a shopping list.')
+        return
+      }
+
+      const response = await fetch('/api/shopping/create-list', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mealPlanItems: productMeals,
+          weekStart: new Date().toISOString()
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create shopping list')
+      }
+
+      const data = await response.json()
+      
+      if (data.success && data.shoppingListUrl) {
+        // Open Instacart shopping list in new tab
+        window.open(data.shoppingListUrl, '_blank')
+      } else {
+        throw new Error(data.error || 'Failed to create shopping list')
+      }
+    } catch (error) {
+      console.error('Shopping list generation error:', error)
+      alert('Failed to generate shopping list. Please try again.')
+    }
   }
 
   return (
@@ -95,7 +160,10 @@ export default function MealPlanningPage() {
             <p className="text-gray-600">Plan your weekly meals and generate shopping lists</p>
           </div>
           <div className="flex gap-3">
-            <button className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
+            <button 
+              onClick={generateShoppingList}
+              className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors"
+            >
               📋 Generate Shopping List
             </button>
             <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
@@ -272,14 +340,27 @@ export default function MealPlanningPage() {
                 </button>
                 
                 <button
-                  onClick={() => handleAddMeal('mealBuilder')}
-                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                  onClick={() => handleAddMeal('productMeal')}
+                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-colors"
                 >
                   <div className="flex items-center">
                     <span className="text-2xl mr-3">🛒</span>
                     <div>
-                      <div className="font-medium">Build New Meal</div>
-                      <div className="text-sm text-gray-600">Create from Instacart products</div>
+                      <div className="font-medium">Product-Based Meal</div>
+                      <div className="text-sm text-gray-600">Mac & cheese, nuggets, etc.</div>
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => handleAddMeal('mealBuilder')}
+                  className="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">🔍</span>
+                    <div>
+                      <div className="font-medium">Search Products</div>
+                      <div className="text-sm text-gray-600">Search Instacart catalog</div>
                     </div>
                   </div>
                 </button>
@@ -313,6 +394,16 @@ export default function MealPlanningPage() {
           }}
           onSelectMeal={handleSavedMealSelect}
         />
+
+        {activeModal === 'productMeal' && (
+          <ProductMealBuilder
+            onSave={handleProductMealSave}
+            onCancel={() => {
+              setActiveModal(null)
+              setSelectedCell(null)
+            }}
+          />
+        )}
 
         {activeModal === 'mealBuilder' && (
           <div 

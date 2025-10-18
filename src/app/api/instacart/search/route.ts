@@ -14,28 +14,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 })
     }
 
-    // Instacart Connect API endpoint for product search
-    const instacartUrl = 'https://connect.instacart.com/v2/fulfillment/products/search'
+    // Instacart Development API endpoint (using dev server for development API key)
+    const instacartUrl = 'https://connect.dev.instacart.tools/idp/v1/catalog/search'
+    
+    // Try POST request with proper body structure as shown in docs
+    const requestBody = {
+      query: query,
+      location: {
+        address: '123 Main St, San Francisco, CA 94102'
+      },
+      size: 20
+    }
+    
+    console.log('Making request to Instacart API:', instacartUrl)
+    console.log('Request body:', JSON.stringify(requestBody, null, 2))
     
     const response = await fetch(instacartUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        query: query,
-        location: {
-          address: '123 Main St, San Francisco, CA 94102' // Default location - should be user configurable
-        },
-        size: 20, // Limit results
-      }),
+      body: JSON.stringify(requestBody),
     })
 
+    console.log('Response status:', response.status, response.statusText)
+    
     if (!response.ok) {
       console.error('Instacart API error:', response.status, response.statusText)
       const errorText = await response.text()
       console.error('Response body:', errorText)
+      console.log('Falling back to mock data because API failed')
       
       // Return mock data if API fails
       return NextResponse.json({ 
@@ -48,6 +58,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json()
+    console.log('Instacart API raw response:', JSON.stringify(data, null, 2))
     
     // Transform Instacart API response to our format
     const products = data.products?.map((product: any) => ({
@@ -59,6 +70,7 @@ export async function POST(request: NextRequest) {
       image: product.image_url,
     })) || []
 
+    console.log('Transformed products:', JSON.stringify(products, null, 2))
     return NextResponse.json({ products })
 
   } catch (error) {
