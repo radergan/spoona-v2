@@ -7,7 +7,7 @@ import { ProductMealBuilder } from '@/components/ProductMealBuilder'
 import { RecipeSelectionModal } from '@/components/RecipeSelectionModal'
 import { SavedMealsModal } from '@/components/SavedMealsModal'
 
-type ModalType = null | 'recipe' | 'savedMeal' | 'mealBuilder' | 'productMeal'
+type ModalType = null | 'recipe' | 'savedMeal' | 'mealBuilder' | 'productMeal' | 'mealSlots'
 
 interface MealPlanItem {
   type: 'recipe' | 'savedMeal' | 'productMeal'
@@ -15,11 +15,53 @@ interface MealPlanItem {
   estimatedPrice?: number
 }
 
+interface UserSubscription {
+  isPremium: boolean
+  customMealSlots?: string[]
+}
+
+interface MealSlot {
+  id: string
+  name: string
+  order: number
+  isDefault: boolean
+}
+
 export default function MealPlanningPage() {
   const [activeModal, setActiveModal] = useState<ModalType>(null)
   const [selectedCell, setSelectedCell] = useState<{ day: string; mealType: string } | null>(null)
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set())
+  
+  // Premium subscription state (in real app, this would come from auth context)
+  const [userSubscription] = useState<UserSubscription>({
+    isPremium: true, // Set to false to test free version
+    customMealSlots: ['Breakfast', 'Mid-Morning Snack', 'Lunch', 'Afternoon Snack', 'Dinner', 'Evening Snack']
+  })
+
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-  const mealTypes = ['Breakfast', 'Lunch', 'Dinner']
+  
+  // Default meal slots for free users
+  const defaultMealSlots: MealSlot[] = [
+    { id: 'breakfast', name: 'Breakfast', order: 1, isDefault: true },
+    { id: 'lunch', name: 'Lunch', order: 2, isDefault: true },
+    { id: 'dinner', name: 'Dinner', order: 3, isDefault: true }
+  ]
+
+  // Get current meal slots based on subscription
+  const getMealSlots = (): MealSlot[] => {
+    if (userSubscription.isPremium && userSubscription.customMealSlots) {
+      return userSubscription.customMealSlots.map((slot, index) => ({
+        id: slot.toLowerCase().replace(/\s+/g, '-'),
+        name: slot,
+        order: index + 1,
+        isDefault: defaultMealSlots.some(d => d.name === slot)
+      }))
+    }
+    return defaultMealSlots
+  }
+
+  const mealSlots = getMealSlots()
+  const mealTypes = mealSlots.map(slot => slot.name)
 
   // Sample meal plan data
   const [mealPlan, setMealPlan] = useState<Record<string, MealPlanItem>>({
@@ -101,6 +143,22 @@ export default function MealPlanningPage() {
     })
   }
 
+  const toggleDayExpansion = (day: string) => {
+    setExpandedDays(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(day)) {
+        newSet.delete(day)
+      } else {
+        newSet.add(day)
+      }
+      return newSet
+    })
+  }
+
+  const handleMealSlotConfig = () => {
+    setActiveModal('mealSlots')
+  }
+
   const generateShoppingList = async () => {
     try {
       // Filter only product-based meals from the meal plan
@@ -153,12 +211,32 @@ export default function MealPlanningPage() {
       
       <main className="container mx-auto px-gh-6 py-gh-6">
         {/* Header */}
-        <div className="flex justify-between items-start mb-gh-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-gh-6 gap-gh-4">
           <div>
-            <h1 className="text-2xl font-semibold text-gh-fg-default mb-gh-2">Meal Planning</h1>
+            <div className="flex items-center gap-gh-3 mb-gh-2">
+              <h1 className="text-2xl font-semibold text-gh-fg-default">Meal Planning</h1>
+              {userSubscription.isPremium && (
+                <span className="bg-gh-accent-emphasis text-gh-fg-onEmphasis px-2 py-0.5 rounded-full text-xs font-medium">
+                  Premium
+                </span>
+              )}
+            </div>
             <p className="text-gh-fg-muted text-sm">Plan your weekly meals and generate shopping lists</p>
+            <p className="text-gh-fg-muted text-xs mt-1">
+              {userSubscription.isPremium 
+                ? `Using ${mealSlots.length} custom meal slots`
+                : '3 meal slots (upgrade for more)'}
+            </p>
           </div>
-          <div className="flex gap-gh-2">
+          <div className="flex flex-wrap gap-gh-2">
+            {userSubscription.isPremium && (
+              <button 
+                onClick={handleMealSlotConfig}
+                className="bg-gh-canvas-default border border-gh-border-default hover:bg-gh-canvas-subtle text-gh-fg-default px-gh-3 py-1.5 rounded-gh-md text-sm font-medium transition-colors shadow-gh-sm hover:shadow-gh-md"
+              >
+                Configure Meals
+              </button>
+            )}
             <button 
               onClick={generateShoppingList}
               className="bg-gh-canvas-default border border-gh-border-default hover:bg-gh-canvas-subtle text-gh-fg-default px-gh-3 py-1.5 rounded-gh-md text-sm font-medium transition-colors shadow-gh-sm hover:shadow-gh-md"
@@ -188,10 +266,10 @@ export default function MealPlanningPage() {
           </div>
         </div>
 
-        {/* Meal Planning Grid */}
-        <div className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md overflow-hidden shadow-gh-sm">
+        {/* Desktop Meal Planning Grid */}
+        <div className="hidden lg:block bg-gh-canvas-default border border-gh-border-default rounded-gh-md overflow-hidden shadow-gh-sm">
           {/* Header Row */}
-          <div className="grid grid-cols-8 bg-gh-canvas-inset border-b border-gh-border-muted">
+          <div className={`grid bg-gh-canvas-inset border-b border-gh-border-muted`} style={{ gridTemplateColumns: `120px repeat(7, 1fr)` }}>
             <div className="p-gh-3 text-sm font-medium text-gh-fg-muted">Meal</div>
             {daysOfWeek.map((day) => (
               <div key={day} className="p-gh-3 text-sm font-medium text-gh-fg-muted text-center border-l border-gh-border-muted">
@@ -202,7 +280,7 @@ export default function MealPlanningPage() {
 
           {/* Meal Rows */}
           {mealTypes.map((mealType) => (
-            <div key={mealType} className="grid grid-cols-8 border-b border-gh-border-muted last:border-b-0">
+            <div key={mealType} className={`grid border-b border-gh-border-muted last:border-b-0`} style={{ gridTemplateColumns: `120px repeat(7, 1fr)` }}>
               <div className="p-gh-3 bg-gh-canvas-inset text-sm font-medium text-gh-fg-default flex items-center border-r border-gh-border-muted">
                 {mealType}
               </div>
@@ -248,7 +326,7 @@ export default function MealPlanningPage() {
                         onClick={() => handleCellClick(day, mealType)}
                         className="border-2 border-dashed border-gh-border-default rounded-gh-sm p-gh-2 text-center cursor-pointer hover:border-gh-accent-muted hover:bg-gh-accent-subtle transition-colors h-full flex items-center justify-center"
                       >
-                        <span className="text-gh-fg-muted text-xs">+ Add meal</span>
+                        <span className="text-gh-fg-muted text-xs">+ Add</span>
                       </div>
                     )}
                   </div>
@@ -256,6 +334,124 @@ export default function MealPlanningPage() {
               })}
             </div>
           ))}
+        </div>
+
+        {/* Mobile Day Cards */}
+        <div className="lg:hidden space-y-gh-3">
+          {daysOfWeek.map((day) => {
+            const isExpanded = expandedDays.has(day)
+            const dayMeals = mealTypes.filter(mealType => mealPlan[`${day}-${mealType}`])
+            
+            return (
+              <div key={day} className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md shadow-gh-sm overflow-hidden">
+                {/* Day Header */}
+                <button
+                  onClick={() => toggleDayExpansion(day)}
+                  className="w-full p-gh-4 flex items-center justify-between bg-gh-canvas-subtle hover:bg-gh-neutral-muted transition-colors"
+                >
+                  <div className="flex items-center gap-gh-3">
+                    <h3 className="font-semibold text-gh-fg-default">{day}</h3>
+                    <span className="text-sm text-gh-fg-muted">
+                      {dayMeals.length} of {mealTypes.length} meals
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-gh-2">
+                    {dayMeals.length > 0 && (
+                      <div className="flex -space-x-1">
+                        {dayMeals.slice(0, 3).map((mealType) => {
+                          const meal = mealPlan[`${day}-${mealType}`]
+                          return (
+                            <div
+                              key={mealType}
+                              className={`w-6 h-6 rounded-full border-2 border-gh-canvas-default flex items-center justify-center text-xs font-medium ${
+                                meal?.type === 'recipe' ? 'bg-gh-accent-subtle text-gh-accent-fg' : 
+                                meal?.type === 'productMeal' ? 'bg-gh-severe-subtle text-gh-severe-fg' : 
+                                'bg-gh-success-subtle text-gh-success-fg'
+                              }`}
+                              title={`${mealType}: ${meal?.name}`}
+                            >
+                              {mealType.charAt(0)}
+                            </div>
+                          )
+                        })}
+                        {dayMeals.length > 3 && (
+                          <div className="w-6 h-6 rounded-full border-2 border-gh-canvas-default bg-gh-neutral-muted text-gh-fg-muted flex items-center justify-center text-xs font-medium">
+                            +{dayMeals.length - 3}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <svg 
+                      className={`w-4 h-4 text-gh-fg-muted transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </button>
+
+                {/* Expanded Day Content */}
+                {isExpanded && (
+                  <div className="border-t border-gh-border-muted">
+                    <div className="p-gh-4 space-y-gh-3">
+                      {mealTypes.map((mealType) => {
+                        const mealKey = `${day}-${mealType}`
+                        const meal = mealPlan[mealKey]
+                        
+                        return (
+                          <div key={mealType} className="flex items-start gap-gh-3">
+                            <div className="w-20 text-sm font-medium text-gh-fg-muted py-2 flex-shrink-0">
+                              {mealType}
+                            </div>
+                            <div className="flex-1">
+                              {meal ? (
+                                <div className="bg-gh-success-subtle border border-gh-success-muted rounded-gh-sm p-gh-3 group relative">
+                                  <div className="font-medium text-sm text-gh-fg-default mb-1">{meal.name}</div>
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                      meal.type === 'recipe' ? 'bg-gh-accent-subtle text-gh-accent-fg' : 
+                                      meal.type === 'productMeal' ? 'bg-gh-severe-subtle text-gh-severe-fg' : 
+                                      'bg-gh-neutral-muted text-gh-fg-muted'
+                                    }`}>
+                                      {meal.type === 'recipe' ? 'Recipe' : 
+                                       meal.type === 'productMeal' ? 'Product' : 'Custom'}
+                                    </span>
+                                    {meal.estimatedPrice && (
+                                      <span className="text-xs text-gh-success-fg font-medium">
+                                        ${meal.estimatedPrice.toFixed(2)}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <button
+                                    onClick={() => handleRemoveMeal(day, mealType)}
+                                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 bg-gh-danger-emphasis hover:bg-gh-danger-fg text-gh-fg-onEmphasis rounded-gh-sm w-6 h-6 flex items-center justify-center transition-all shadow-gh-sm"
+                                    title="Remove meal"
+                                  >
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              ) : (
+                                <button 
+                                  onClick={() => handleCellClick(day, mealType)}
+                                  className="w-full border-2 border-dashed border-gh-border-default rounded-gh-sm p-gh-3 text-center hover:border-gh-accent-muted hover:bg-gh-accent-subtle transition-colors"
+                                >
+                                  <span className="text-gh-fg-muted text-sm">+ Add meal</span>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
 
         {/* Quick Add and Summary Section */}
@@ -424,6 +620,110 @@ export default function MealPlanningPage() {
                   setSelectedCell(null)
                 }}
               />
+            </div>
+          </div>
+        )}
+
+        {/* Meal Slot Configuration Modal (Premium) */}
+        {activeModal === 'mealSlots' && userSubscription.isPremium && (
+          <div 
+            className="fixed inset-0 bg-gh-neutral-emphasis/50 flex items-center justify-center z-50 p-gh-4"
+            onClick={() => setActiveModal(null)}
+          >
+            <div 
+              className="bg-gh-canvas-default border border-gh-border-default rounded-gh-md shadow-gh-lg max-w-2xl w-full max-h-[80vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center p-gh-4 border-b border-gh-border-muted bg-gh-canvas-subtle">
+                <div>
+                  <h3 className="text-lg font-semibold text-gh-fg-default">Configure Meal Slots</h3>
+                  <p className="text-gh-fg-muted text-sm mt-1">Customize up to 8 meal slots for your daily planning</p>
+                </div>
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="text-gh-fg-muted hover:text-gh-fg-default p-gh-2 rounded-gh-sm hover:bg-gh-neutral-muted transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="p-gh-4">
+                <div className="mb-gh-4">
+                  <div className="flex items-center gap-gh-2 mb-gh-3">
+                    <svg className="w-4 h-4 text-gh-accent-fg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                    <h4 className="font-medium text-gh-fg-default">Premium Feature</h4>
+                  </div>
+                  <p className="text-sm text-gh-fg-muted mb-gh-4">
+                    As a premium member, you can customize your meal slots beyond the standard Breakfast, Lunch, Dinner. 
+                    Perfect for athletes, shift workers, or anyone with unique eating schedules.
+                  </p>
+                </div>
+
+                <div className="space-y-gh-3 mb-gh-4">
+                  <h5 className="font-medium text-gh-fg-default text-sm">Current Meal Slots ({mealSlots.length}/8)</h5>
+                  {mealSlots.map((slot, index) => (
+                    <div key={slot.id} className="flex items-center gap-gh-3 p-gh-3 bg-gh-canvas-subtle rounded-gh-sm border border-gh-border-default">
+                      <div className="w-6 h-6 bg-gh-accent-subtle text-gh-accent-fg rounded-full flex items-center justify-center text-xs font-medium">
+                        {index + 1}
+                      </div>
+                      <input
+                        type="text"
+                        value={slot.name}
+                        readOnly
+                        className="flex-1 px-gh-3 py-1.5 text-sm border border-gh-border-default rounded-gh-sm bg-gh-canvas-default"
+                      />
+                      <div className="flex gap-gh-1">
+                        {slot.isDefault && (
+                          <span className="text-xs bg-gh-neutral-muted text-gh-fg-muted px-2 py-0.5 rounded-full">
+                            Default
+                          </span>
+                        )}
+                        <button className="text-gh-fg-muted hover:text-gh-danger-fg p-1 rounded-gh-sm hover:bg-gh-danger-subtle transition-colors">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {mealSlots.length < 8 && (
+                    <button className="w-full p-gh-3 border-2 border-dashed border-gh-border-default rounded-gh-sm hover:border-gh-accent-muted hover:bg-gh-accent-subtle transition-colors text-gh-fg-muted hover:text-gh-accent-fg">
+                      <span className="text-sm">+ Add Meal Slot</span>
+                    </button>
+                  )}
+                </div>
+
+                <div className="bg-gh-attention-subtle border border-gh-attention-muted rounded-gh-sm p-gh-3 mb-gh-4">
+                  <div className="flex items-start gap-gh-2">
+                    <svg className="w-4 h-4 text-gh-attention-fg mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="text-sm font-medium text-gh-attention-fg">Popular Custom Slots</p>
+                      <p className="text-xs text-gh-fg-muted mt-1">
+                        Pre-workout, Post-workout, Mid-morning Snack, Afternoon Snack, Evening Snack, Late Night, Second Breakfast
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-gh-2 pt-gh-4 border-t border-gh-border-muted">
+                  <button
+                    onClick={() => setActiveModal(null)}
+                    className="flex-1 px-gh-3 py-2 border border-gh-border-default text-gh-fg-default rounded-gh-sm hover:bg-gh-canvas-subtle transition-colors text-sm"
+                  >
+                    Cancel
+                  </button>
+                  <button className="flex-1 px-gh-3 py-2 bg-gh-accent-emphasis hover:bg-gh-accent-fg text-gh-fg-onEmphasis rounded-gh-sm font-medium transition-colors text-sm">
+                    Save Changes
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
