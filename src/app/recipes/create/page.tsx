@@ -477,7 +477,7 @@ export default function CreateRecipePage() {
                       <div>
                         <p className="text-sm font-medium text-gh-attention-fg">Smart Product Linking</p>
                         <p className="text-xs text-gh-fg-muted mt-1">
-                          As you add ingredients, we'll automatically suggest matching products from major grocery stores. This enables seamless shopping list generation with real prices and availability.
+                          As you add ingredients, we&apos;ll automatically suggest matching products from major grocery stores. This enables seamless shopping list generation with real prices and availability.
                         </p>
                       </div>
                     </div>
