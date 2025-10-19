@@ -47,13 +47,14 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
-  accounts      Account[]
-  sessions      Session[]
-  recipes       Recipe[]
-  recipeBooks   RecipeBook[]
-  mealPlans     MealPlan[]
-  savedMeals    SavedMeal[]
-  shoppingLists ShoppingList[]
+  accounts        Account[]
+  sessions        Session[]
+  recipes         Recipe[]
+  recipeBooks     RecipeBook[]
+  mealPlans       MealPlan[]
+  savedMeals      SavedMeal[]
+  shoppingLists   ShoppingList[]
+  foodSelections  UserFoodSelection[]
 }
 
 model VerificationToken {
@@ -209,4 +210,113 @@ model ShoppingListItem {
   
   shoppingListId String       @db.ObjectId
   shoppingList   ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+}
+
+// ===== PRODUCT CATALOG MODELS =====
+// Comprehensive food database built from scraping + APIs
+
+model Product {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  upc             String?  @unique
+  name            String
+  brand           String
+  description     String?
+  category        String   // "Dairy", "Produce", "Meat & Seafood"
+  subcategory     String?  // "Greek Yogurt", "Organic Milk", "Chicken Breast"
+  keywords        String[] // ["organic", "fat-free", "greek", "high-protein"]
+  
+  // Nutrition data
+  nutrition       NutritionData?
+  servingSizes    ServingSize[]
+  
+  // Media
+  imageUrl        String?
+  thumbnailUrl    String?
+  
+  // Source tracking
+  productUrl      String
+  source          String   // "walmart", "target", "kroger", "usda", "spoonacular"
+  lastUpdated     DateTime @default(now())
+  verified        Boolean  @default(false) // Human verified nutrition data
+  searchPopularity Int     @default(0)    // Track user selections
+  
+  // Relations
+  userSelections  UserFoodSelection[]
+  pricing         ProductPricing[]
+  
+  @@index([category, subcategory])
+  @@index([brand, name])
+  @@index([keywords])
+}
+
+// Embedded nutrition data
+type NutritionData {
+  servingSize          String
+  servingsPerContainer Int?
+  calories             Float
+  totalFat             Float?
+  saturatedFat         Float?
+  transFat             Float?
+  cholesterol          Float?
+  sodium               Float?
+  totalCarbs           Float?
+  dietaryFiber         Float?
+  sugars               Float?
+  addedSugars          Float?
+  protein              Float?
+  vitaminD             Float?
+  calcium              Float?
+  iron                 Float?
+  potassium            Float?
+}
+
+// Embedded serving size data  
+type ServingSize {
+  name      String  // "1 cup (240ml)", "1 container (170g)"
+  grams     Float?
+  isDefault Boolean
+}
+
+// Track user food selections for personalization
+model UserFoodSelection {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  productId   String   @db.ObjectId
+  selectedAt  DateTime @default(now())
+  context     String   // "meal-planning", "recipe-creation", "search"
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, selectedAt])
+  @@index([productId, selectedAt])
+}
+
+// Store location-specific pricing separately (if needed later)
+model ProductPricing {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String   @db.ObjectId
+  store       String   // "walmart", "target", "kroger"
+  location    String   // ZIP code or store ID
+  price       Float
+  available   Boolean  @default(true)
+  lastChecked DateTime @default(now())
+  
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([productId, store, location])
+  @@index([lastChecked])
+}
+
+// USDA FoodData Central integration
+model USDAFood {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  fdcId           String   @unique // USDA FDC ID
+  description     String
+  dataType        String   // "Foundation", "SR Legacy", "Branded"
+  category        String?
+  nutrition       NutritionData?
+  lastUpdated     DateTime @default(now())
+  
+  @@index([dataType, category])
 }
